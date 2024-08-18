@@ -1,9 +1,5 @@
 package com.banking.egbank.modules.user.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,32 +11,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.banking.egbank.modules.user.entities.UserEntity;
-import com.banking.egbank.modules.user.service.UserInterface;
 import com.banking.egbank.modules.user.service.UserService;
-import com.banking.egbank.shared.common.BaseModule.BaseController;
 import com.banking.egbank.shared.common.apiResponse.ResStructure;
 import com.banking.egbank.shared.common.translations.KeysMessages;
 import com.banking.egbank.shared.common.translations.Langs;
-import com.banking.egbank.shared.common.translations.TrMethods;
-import com.banking.egbank.shared.exceptions.ResourceNotFoundException;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 @Tag(name = "user", description = "the user Api")
 @RestController
 // @ResponseBody
-@RequestMapping("/user")
+@RequestMapping("/admin/user")
 public class UserController {
 
     private UserService userService;
@@ -52,7 +39,7 @@ public class UserController {
 
     @Operation(summary = "Fetch all users", description = "fetches all users entities and their data from data source")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation")
+        @ApiResponse(responseCode = "200", description = "successful operation")
     })
 
     @GetMapping()
@@ -62,7 +49,7 @@ public class UserController {
 
     @Operation(summary = "Fetch one element", description = "fetches one  element and their data from data source")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation")
+        @ApiResponse(responseCode = "200", description = "successful operation")
     })
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> findOneById(@PathVariable int id) {
@@ -75,7 +62,7 @@ public class UserController {
 
     @Operation(summary = "Fetch all users", description = "fetches all users entities and their data from data source")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "successful operation")
+        @ApiResponse(responseCode = "200", description = "successful operation")
     })
 
     @PostMapping(produces = "application/json", consumes = "application/json")
@@ -111,7 +98,6 @@ public class UserController {
     // @RequestBody(description = "add new user", required = true, content =
     // @Content(schema = @Schema(implementation = UserEntity.class))) @Valid
     // UserEntity user) {
-
     // userService.create(user);
     // return ResponseEntity.ok("created");
     // }

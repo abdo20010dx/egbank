@@ -29,7 +29,7 @@ public class UserEntity {
     private String full_name;
 
     @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    public String email;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -89,11 +89,11 @@ public class UserEntity {
         this.id = id;
     }
 
-        @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> roles;
 
@@ -131,8 +131,9 @@ public class UserEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
         if (!(o instanceof UserEntity)) {
             return false;
         }
@@ -147,12 +148,16 @@ public class UserEntity {
 
     @Override
     public String toString() {
-        return "{" +
-            " id='" + getId() + "'" +
-            ", fullName='" + getFull_name() + "'" +
-            ", roles='" + getRoles() + "'" +
-            "}";
+        return "{"
+                + " id='" + getId() + "'"
+                + ", fullName='" + getFull_name() + "'"
+                + ", roles='" + getRoles() + "'"
+                + "}";
     }
 
+    public static UserEntity builder() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    }
 
 }

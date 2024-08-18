@@ -1,6 +1,7 @@
 package com.banking.egbank.shared.common.translations;
 
 public enum KeysMessages {
+    ACCOUNT_EXIST,
     SUCCESS,
     FAILED,
     CREATEDSUCCESS,

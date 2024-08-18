@@ -80,6 +80,7 @@ public class EnMessages {
         CLIENT_EN_MESS.put(KeysMessages.ALREADY_ACTIVE, "Already Active");
         CLIENT_EN_MESS.put(KeysMessages.INVAILD_FILE, "the value of {property} invalid");
         CLIENT_EN_MESS.put(KeysMessages.IS_ALREADY_DONE, "is already updated and done.");
+        CLIENT_EN_MESS.put(KeysMessages.ACCOUNT_EXIST, "Account already exist.");
     }
 
 }

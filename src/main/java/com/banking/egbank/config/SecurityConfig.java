@@ -1,55 +1,63 @@
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.context.annotation.Bean;
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.security.authentication.AuthenticationManager;
-// import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-// import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-// import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-// import org.springframework.security.config.http.SessionCreationPolicy;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-// import org.springframework.security.crypto.password.PasswordEncoder;
-// import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+package com.banking.egbank.config;
 
-// import com.banking.egbank.jwt.CustomUserDetailsService;
-// import com.banking.egbank.jwt.JwtAuthenticationFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// @Configuration
-// @EnableWebSecurity
-// public class SecurityConfig extends WebSecurityConfigurerAdapter {
+import com.banking.egbank.jwt.JwtRequestFilter;
+import com.banking.egbank.jwt.JwtUtil;
+import com.banking.egbank.modules.user.service.CustomUserDetailsService;
 
-//     @Autowired
-//     private CustomUserDetailsService customUserDetailsService;
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
 
-//     @Autowired
-//     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
 
-//     @Override
-//     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//         auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
-//     }
+    public SecurityConfig(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
+        this.jwtUtil = jwtUtil;
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
-//     @Bean
-//     public PasswordEncoder passwordEncoder() {
-//         return new BCryptPasswordEncoder();
-//     }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-//     @Bean
-//     @Override
-//     public AuthenticationManager authenticationManagerBean() throws Exception {
-//         return super.authenticationManagerBean();
-//     }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/user/auth/**").permitAll()
+                .requestMatchers("/admin/roles/**").hasAuthority("ADMIN")
+                .requestMatchers("/admin/user/**").hasAuthority("ADMIN")
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);  // Add JWT filter here
+        return http.build();
+    }
 
-//     @Override
-//     protected void configure(HttpSecurity http) throws Exception {
-//         http.csrf().disable()
-//             .authorizeRequests()
-//             .antMatchers("/authenticate", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-//             .anyRequest().authenticated()
-//             .and()
-//             .exceptionHandling()
-//             .and()
-//             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    @Bean
+    public JwtRequestFilter jwtRequestFilter() {
+        return new JwtRequestFilter(jwtUtil, customUserDetailsService);
+    }
 
-//         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//     }
-// }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+}
