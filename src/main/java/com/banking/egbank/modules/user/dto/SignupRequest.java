@@ -1,5 +1,9 @@
 package com.banking.egbank.modules.user.dto;
 
+import java.util.Set;
+
+import com.banking.egbank.modules.role.entities.RoleEntity;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -23,17 +27,25 @@ public class SignupRequest {
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
     private String password;
 
-    // Constructors
-    public SignupRequest() {
-    }
+    @Schema(description = "The roles of the user", example = "[{\"id\": 1, \"name\": \"ADMIN\"}]")
+    private Set<RoleEntity> roles;
 
-    public SignupRequest(String fullName, String email, String password) {
+    public SignupRequest(String fullName, String email, String password, Set<RoleEntity> roles) {
+        this.roles = roles;
         this.fullName = fullName;
         this.email = email;
         this.password = password;
     }
 
     // Getters and Setters
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
     public String getFullName() {
         return fullName;
     }
